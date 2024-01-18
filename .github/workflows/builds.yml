@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build and Collect JARs
         run: |
@@ -22,7 +22,7 @@ jobs:
           cp */target/*.jar $GITHUB_WORKSPACE/jar-artifacts/
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: all-jar-artifacts
           path: jar-artifacts/
