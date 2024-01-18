@@ -1,10 +1,7 @@
 name: Build and Publish Artifacts
 
 on:
-    workflow_dispatch
-#   push:
-#     branches:
-#       - main
+  workflow_dispatch
 
 jobs:
   build:
@@ -18,13 +15,11 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/jar-artifacts  # Create a directory to store JAR files
 
-          # Iterate through each module and copy JAR files to the common folder
-          for module in com.epistimis.uddl.query.feature com.epistimis.uddl.query.ide com.epistimis.uddl.query.ui com.epistimis.uddl.query.web; do
-            cd $module
-            mvn clean install
-            cp target/*.jar ../jar-artifacts/
-            cd ..
-          done
+          # Run Maven package in the root directory
+          mvn package
+
+          # Copy JAR files to the common folder
+          cp */target/*.jar $GITHUB_WORKSPACE/jar-artifacts/
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
