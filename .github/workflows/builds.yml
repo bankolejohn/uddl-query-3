@@ -1,0 +1,33 @@
+name: Build and Publish Artifacts
+
+on:
+    workflow_dispatch
+#   push:
+#     branches:
+#       - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and Collect JARs
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/jar-artifacts  # Create a directory to store JAR files
+
+          # Iterate through each module and copy JAR files to the common folder
+          for module in com.epistimis.uddl.query.feature com.epistimis.uddl.query.ide com.epistimis.uddl.query.ui com.epistimis.uddl.query.web; do
+            cd $module
+            mvn clean install
+            cp target/*.jar ../jar-artifacts/
+            cd ..
+          done
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: all-jar-artifacts
+          path: jar-artifacts/
