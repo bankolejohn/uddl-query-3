@@ -16,7 +16,7 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/jar-artifacts  # Create a directory to store JAR files
 
           # Run Maven package in the root directory
-          mvn package
+          mvn clean install
 
           # Copy JAR files to the common folder
           cp */target/*.jar $GITHUB_WORKSPACE/jar-artifacts/
