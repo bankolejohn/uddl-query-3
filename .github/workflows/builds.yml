@@ -44,9 +44,12 @@ jobs:
 
     - name: Upload Release Artifacts
       id: upload-release-assets
+      run: |
+       ./find_jars.sh
+      shell: bash 
       uses: actions/upload-release-asset@v1
       with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ join(glob('${GITHUB_WORKSPACE}/jar-artifacts/*.jar'), '\n') }}
+          asset_path: ${{ steps.upload-release-assets.outputs.jar-files }}
           asset_name: all-jar-artifacts.zip  # Change the name as needed
           asset_content_type: application/zip
