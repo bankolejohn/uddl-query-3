@@ -45,8 +45,11 @@ jobs:
     - name: Upload Release Artifacts
       id: upload-release-assets
       run: |
-       ./find_jars.sh
-      shell: bash 
+       jar_files=$(find "$GITHUB_WORKSPACE/jar-artifacts" -type f -name '*.jar' -exec echo {} +)
+       echo "::set-output name=jar-files::$jar_files"
+      shell: bash
+    
+    - name: Upload Release Artifacts
       uses: actions/upload-release-asset@v1
       with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
