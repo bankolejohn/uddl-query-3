@@ -9,50 +9,53 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Build and Collect JARs
       run: |
-          mkdir -p $GITHUB_WORKSPACE/jar-artifacts  # Create a directory to store JAR files
+        mkdir -p $GITHUB_WORKSPACE/jar-artifacts  # Create a directory to store JAR files
 
-          # Run Maven package in the root directory
-          mvn clean install
+        # Run Maven package in the root directory
+        mvn clean install
 
-          # Copy JAR files to the common folder
-          cp */target/*.jar $GITHUB_WORKSPACE/jar-artifacts/
+        # Copy JAR files to the common folder
+        cp */target/*.jar $GITHUB_WORKSPACE/jar-artifacts/
 
-    # - name: Publish Artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #       name: all-jar-artifacts
-    #       path: jar-artifacts/
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: all-jar-artifacts
+        path: jar-artifacts/
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
-      env: 
-       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-          tag_name: v1  # Set a version or tag name for your release
-          release_name: Release v1
-          draft: false
-          prerelease: false      
+        tag_name: v1  # Set a version or tag name for your release
+        release_name: Release v1
+        draft: false
+        prerelease: false
 
-    - name: Upload Release Artifacts
-      id: upload-release-assets
+    - name: Set Release Assets
+      id: set_release_assets
       run: |
-       jar_files=$(find "$GITHUB_WORKSPACE/jar-artifacts" -type f -name '*.jar' -exec echo {} +)
-       echo "::set-output name=jar-files::$jar_files"
+        jar_files=$(find "$GITHUB_WORKSPACE/jar-artifacts" -type f -name '*.jar' -exec echo {} +)
+        echo "::set-output name=jar_files::$jar_files"
       shell: bash
-    
-    - name: Upload Release Artifacts
+
+    - name: Upload Release Assets
+      id: upload_release_assets
       uses: actions/upload-release-asset@v1
       with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.upload-release-assets.outputs.jar-files }}
-          asset_name: all-jar-artifacts.zip  # Change the name as needed
-          asset_content_type: application/zip
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.set_release_assets.outputs.jar_files }}
+        asset_name: all-jar-artifacts.zip  # Change the name as needed
+        asset_content_type: application/zip
