@@ -41,7 +41,7 @@ jobs:
       with:
         tag_name: v1  # Set a version or tag name for your release
         release_name: Release v1
-        draft: false
+        draft: true
         prerelease: false
 
     - name: Set Release Assets
