@@ -32,4 +32,5 @@ jobs:
           
     - name: Get Artifact Download URL
       run: |
-       echo "Artifact URL: $(echo $ACTIONS_OUTPUT_UPLOAD_URL_PARAMETER)" > /jar-artifacts/artifact_url.txt
+       # echo "Artifact URL: $(echo $ACTIONS_OUTPUT_UPLOAD_URL_PARAMETER)" > /jar-artifacts/artifact_url.txt
+       echo "Artifact URL: ${{ steps.publish.outputs.artifact_url }}" > $GITHUB_WORKSPACE/jar-artifacts/artifact_url.txt
